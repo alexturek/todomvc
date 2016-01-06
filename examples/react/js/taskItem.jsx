@@ -75,23 +75,39 @@ var app = app || {};
 			}
 		},
 
+		renderSubtask: function(subtask) {
+			return (
+				<div 
+						className={classNames({
+							completed: subtask.completed,
+							subtask: true,
+						})}
+						key={subtask.id}
+					>
+					<input
+						type="checkbox"
+						checked={subtask.completed}
+						onChange={_.partial(this.props.onSubtaskToggle, subtask.id)}
+						/>
+					{subtask.title}
+				</div>
+			);
+		},
+
 		render: function () {
+			var subtasks = _.map(this.props.task.subtasks, this.renderSubtask);
 			return (
 				<li className={classNames({
 					completed: this.props.task.completed,
 					editing: this.props.editing
 				})}>
 					<div className="view">
-						<input
-							className="toggle"
-							type="checkbox"
-							checked={this.props.task.completed}
-							onChange={this.props.onToggle}
-						/>
 						<label onDoubleClick={this.handleEdit}>
 							{this.props.task.title}
 						</label>
-						<button className="destroy" onClick={this.props.onDestroy} />
+						<ul>
+							{subtasks}
+						</ul>
 					</div>
 					<input
 						ref="editField"

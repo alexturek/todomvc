@@ -2,7 +2,7 @@
 /*jshint white:false */
 /*jshint trailing:false */
 /*jshint newcap:false */
-/*global React, Router, _ */
+/*global _, React, Router */
 var app = app || {};
 
 (function () {
@@ -80,17 +80,25 @@ var app = app || {};
 			this.props.model.clearCompleted();
 		},
 
+		toggleSubtask: function(id) {
+			console.log('toggled', id);
+			this.props.model.complete(id);
+		},
+
 		render: function () {
 			var footer;
 			var main;
-			var tasks = this.props.model.tasks;
+			var model = this.props.model;
+			var tasks = model.tasks || [];
+			var isCompleted = model.isCompleted.bind(model);
 
 			var shownTasks = tasks.filter(function (task) {
+				var completed = isCompleted(task.id);
 				switch (this.state.nowShowing) {
 				case app.ACTIVE_TASKS:
-					return !task.completed;
+					return !completed;
 				case app.COMPLETED_TASKS:
-					return task.completed;
+					return completed;
 				default:
 					return true;
 				}
@@ -101,12 +109,7 @@ var app = app || {};
 					<TaskItem
 						key={task.id}
 						task={task}
-						onToggle={this.toggle.bind(this, task)}
-						onDestroy={this.destroy.bind(this, task)}
-						onEdit={this.edit.bind(this, task)}
-						editing={this.state.editing === task.id}
-						onSave={this.save.bind(this, task)}
-						onCancel={this.cancel}
+						onSubtaskToggle={this.toggleSubtask}
 					/>
 				);
 			}, this);

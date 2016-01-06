@@ -20,6 +20,42 @@ var app = app || {};
 		this.onChanges = [];
 	};
 
+	app.TaskModel.prototype.completedSubtasks = function(task) {
+		return _.filter(task.subtasks, function(subtask) {
+			return subtask.completed;
+		});
+	};
+
+	app.TaskModel.prototype.complete = function(id) {
+		var found = this.find(id);
+		if (!found || !found.subtask) {
+			return;
+		}
+		this.tasks = _.map(this.tasks, function(task) {
+			if (task != found.parent) return task;
+			return _.extend({}, task, {
+				subtasks: task.subtasks.map(function(subtask) {
+					if (subtask.id != id) return subtask;
+					return _.extend({}, subtask, { completed: !subtask.completed });
+				}),
+			});
+		});
+		this.inform();
+	};
+
+	app.TaskModel.prototype.isCompleted = function(id) {
+		var found = this.find(id);
+		if (!found) return false;
+		if (found.task) {
+			var task = found.task;
+			return task.subtasks.length &&
+						 task.subtasks.length == this.completedSubtasks(task).length;
+		}
+		if (found.subtask) {
+			return found.subtask.completed;
+		}
+	};
+
 	app.TaskModel.prototype.subscribe = function (onChange) {
 		this.onChanges.push(onChange);
 	};
@@ -29,46 +65,31 @@ var app = app || {};
 		this.onChanges.forEach(function (cb) { cb(); });
 	};
 
+	app.TaskModel.prototype.find = function(id) {
+		var matcher = { id: id };
+		return _.compact(_.map(this.tasks, function(task) {
+			if (task.id == id) {
+				return { task: task };
+			}
+			var subtask = _.find(task.subtasks, matcher);
+			if (subtask) {
+				return {
+					parent: task,
+					subtask: subtask,
+				};
+			}
+		}))[0];
+	};
+
 	app.TaskModel.prototype.addTask = function (title) {
 		this.tasks = this.tasks.concat({
 			id: Utils.uuid(),
 			title: title,
-			completed: false,
-			subtasks: [],
-		});
-
-		this.inform();
-	};
-
-	app.TaskModel.prototype.toggle = function (taskToToggle) {
-		this.tasks = this.tasks.map(function (task) {
-			return task !== taskToToggle ?
-				task :
-				Utils.extend({}, task, {completed: !task.completed});
-		});
-
-		this.inform();
-	};
-
-	app.TaskModel.prototype.destroy = function (task) {
-		this.tasks = this.tasks.filter(function (candidate) {
-			return candidate !== task;
-		});
-
-		this.inform();
-	};
-
-	app.TaskModel.prototype.save = function (taskToSave, text) {
-		this.tasks = this.tasks.map(function (task) {
-			return task !== taskToSave ? task : Utils.extend({}, task, {title: text});
-		});
-
-		this.inform();
-	};
-
-	app.TaskModel.prototype.clearCompleted = function () {
-		this.tasks = this.tasks.filter(function (task) {
-			return !task.completed;
+			subtasks: [{
+				id: Utils.uuid(),
+				title: 'A subtask',
+				completed: false,
+			}],
 		});
 
 		this.inform();
