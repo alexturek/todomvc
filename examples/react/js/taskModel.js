@@ -50,6 +50,22 @@ var app = app || {};
 		}
 	};
 
+	app.TaskModel.prototype.addSubtask = function (id, title) {
+		var found = this.find(id);
+		if (!found || !found.task) return;
+		this.tasks = _.map(this.tasks, function(task) {
+			if (task != found.task) return task;
+			return _.extend({}, task, {
+				subtasks: task.subtasks.concat([{
+					id: Utils.uuid(),
+					title: title,
+					completed: false,
+				}])
+			});
+		});
+		this.inform();
+	};
+
 	app.TaskModel.prototype.subscribe = function (onChange) {
 		this.onChanges.push(onChange);
 	};
@@ -79,11 +95,7 @@ var app = app || {};
 		this.tasks = this.tasks.concat({
 			id: Utils.uuid(),
 			title: title,
-			subtasks: [{
-				id: Utils.uuid(),
-				title: 'A subtask',
-				completed: false,
-			}],
+			subtasks: [],
 		});
 
 		this.inform();

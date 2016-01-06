@@ -81,8 +81,14 @@ var app = app || {};
 		},
 
 		toggleSubtask: function(id) {
-			console.log('toggled', id);
 			this.props.model.complete(id);
+		},
+
+		subtaskAdder: function(task) {
+			var model = this.props.model;
+			return function() {
+				model.addSubtask(task.id, 'A new subtask');
+			};
 		},
 
 		render: function () {
@@ -110,6 +116,7 @@ var app = app || {};
 						key={task.id}
 						task={task}
 						onSubtaskToggle={this.toggleSubtask}
+						onAddSubtask={this.subtaskAdder(task)}
 					/>
 				);
 			}, this);
