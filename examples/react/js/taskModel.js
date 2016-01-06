@@ -33,19 +33,8 @@ var app = app || {};
 		this.tasks = this.tasks.concat({
 			id: Utils.uuid(),
 			title: title,
-			completed: false
-		});
-
-		this.inform();
-	};
-
-	app.TaskModel.prototype.toggleAll = function (checked) {
-		// Note: it's usually better to use immutable data structures since they're
-		// easier to reason about and React works very well with them. That's why
-		// we use map() and filter() everywhere instead of mutating the array or
-		// task items themselves.
-		this.tasks = this.tasks.map(function (task) {
-			return Utils.extend({}, task, {completed: checked});
+			completed: false,
+			subtasks: [],
 		});
 
 		this.inform();

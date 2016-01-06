@@ -55,11 +55,6 @@ var app = app || {};
 			}
 		},
 
-		toggleAll: function (event) {
-			var checked = event.target.checked;
-			this.props.model.toggleAll(checked);
-		},
-
 		toggle: function (taskToToggle) {
 			this.props.model.toggle(taskToToggle);
 		},
@@ -135,12 +130,6 @@ var app = app || {};
 			if (tasks.length) {
 				main = (
 					<section className="main">
-						<input
-							className="toggle-all"
-							type="checkbox"
-							onChange={this.toggleAll}
-							checked={activeTaskCount === 0}
-						/>
 						<ul className="todo-list">
 							{taskItems}
 						</ul>
