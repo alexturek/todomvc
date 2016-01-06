@@ -26,7 +26,7 @@ var app = app || {};
 			var nowShowing = this.props.nowShowing;
 			return (
 				<footer className="footer">
-					<span className="task-count">
+					<span className="todo-count">
 						<strong>{this.props.count}</strong> {activeTaskWord} left
 					</span>
 					<ul className="filters">

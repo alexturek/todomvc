@@ -141,7 +141,7 @@ var app = app || {};
 							onChange={this.toggleAll}
 							checked={activeTaskCount === 0}
 						/>
-						<ul className="task-list">
+						<ul className="todo-list">
 							{taskItems}
 						</ul>
 					</section>
@@ -153,7 +153,7 @@ var app = app || {};
 					<header className="header">
 						<h1>tasks</h1>
 						<input
-							className="new-task"
+							className="new-todo"
 							placeholder="What needs to be done?"
 							value={this.state.newTask}
 							onKeyDown={this.handleNewTaskKeyDown}
@@ -173,7 +173,7 @@ var app = app || {};
 	function render() {
 		React.render(
 			<TaskApp model={model}/>,
-			document.getElementsByClassName('taskapp')[0]
+			document.getElementsByClassName('todoapp')[0]
 		);
 	}
 
