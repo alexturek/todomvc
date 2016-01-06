@@ -11,7 +11,7 @@ var app = app || {};
 	var ESCAPE_KEY = 27;
 	var ENTER_KEY = 13;
 
-	app.TodoItem = React.createClass({
+	app.TaskItem = React.createClass({
 		handleSubmit: function (event) {
 			var val = this.state.editText.trim();
 			if (val) {
@@ -24,12 +24,12 @@ var app = app || {};
 
 		handleEdit: function () {
 			this.props.onEdit();
-			this.setState({editText: this.props.todo.title});
+			this.setState({editText: this.props.task.title});
 		},
 
 		handleKeyDown: function (event) {
 			if (event.which === ESCAPE_KEY) {
-				this.setState({editText: this.props.todo.title});
+				this.setState({editText: this.props.task.title});
 				this.props.onCancel(event);
 			} else if (event.which === ENTER_KEY) {
 				this.handleSubmit(event);
@@ -43,7 +43,7 @@ var app = app || {};
 		},
 
 		getInitialState: function () {
-			return {editText: this.props.todo.title};
+			return {editText: this.props.task.title};
 		},
 
 		/**
@@ -55,7 +55,7 @@ var app = app || {};
 		 */
 		shouldComponentUpdate: function (nextProps, nextState) {
 			return (
-				nextProps.todo !== this.props.todo ||
+				nextProps.task !== this.props.task ||
 				nextProps.editing !== this.props.editing ||
 				nextState.editText !== this.state.editText
 			);
@@ -78,18 +78,18 @@ var app = app || {};
 		render: function () {
 			return (
 				<li className={classNames({
-					completed: this.props.todo.completed,
+					completed: this.props.task.completed,
 					editing: this.props.editing
 				})}>
 					<div className="view">
 						<input
 							className="toggle"
 							type="checkbox"
-							checked={this.props.todo.completed}
+							checked={this.props.task.completed}
 							onChange={this.props.onToggle}
 						/>
 						<label onDoubleClick={this.handleEdit}>
-							{this.props.todo.title}
+							{this.props.task.title}
 						</label>
 						<button className="destroy" onClick={this.props.onDestroy} />
 					</div>

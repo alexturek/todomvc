@@ -8,9 +8,9 @@ var app = app || {};
 (function () {
 	'use strict';
 
-	app.TodoFooter = React.createClass({
+	app.TaskFooter = React.createClass({
 		render: function () {
-			var activeTodoWord = app.Utils.pluralize(this.props.count, 'item');
+			var activeTaskWord = app.Utils.pluralize(this.props.count, 'item');
 			var clearButton = null;
 
 			if (this.props.completedCount > 0) {
@@ -26,14 +26,14 @@ var app = app || {};
 			var nowShowing = this.props.nowShowing;
 			return (
 				<footer className="footer">
-					<span className="todo-count">
-						<strong>{this.props.count}</strong> {activeTodoWord} left
+					<span className="task-count">
+						<strong>{this.props.count}</strong> {activeTaskWord} left
 					</span>
 					<ul className="filters">
 						<li>
 							<a
 								href="#/"
-								className={classNames({selected: nowShowing === app.ALL_TODOS})}>
+								className={classNames({selected: nowShowing === app.ALL_TASKS})}>
 									All
 							</a>
 						</li>
@@ -41,7 +41,7 @@ var app = app || {};
 						<li>
 							<a
 								href="#/active"
-								className={classNames({selected: nowShowing === app.ACTIVE_TODOS})}>
+								className={classNames({selected: nowShowing === app.ACTIVE_TASKS})}>
 									Active
 							</a>
 						</li>
@@ -49,7 +49,7 @@ var app = app || {};
 						<li>
 							<a
 								href="#/completed"
-								className={classNames({selected: nowShowing === app.COMPLETED_TODOS})}>
+								className={classNames({selected: nowShowing === app.COMPLETED_TASKS})}>
 									Completed
 							</a>
 						</li>

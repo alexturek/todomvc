@@ -8,49 +8,50 @@ var app = app || {};
 (function () {
 	'use strict';
 
-	app.ALL_TODOS = 'all';
-	app.ACTIVE_TODOS = 'active';
-	app.COMPLETED_TODOS = 'completed';
-	var TodoFooter = app.TodoFooter;
-	var TodoItem = app.TodoItem;
+	app.ALL_TASKS = 'all';
+	app.ACTIVE_TASKS = 'active';
+	app.COMPLETED_TASKS = 'completed';
+	var TaskFooter = app.TaskFooter;
+	var TaskItem = app.TaskItem;
 
 	var ENTER_KEY = 13;
 
-	var TodoApp = React.createClass({
+	var TaskApp = React.createClass({
 		getInitialState: function () {
 			return {
-				nowShowing: app.ALL_TODOS,
+				nowShowing: app.ALL_TASKS,
 				editing: null,
-				newTodo: ''
+				newTask: ''
 			};
 		},
 
 		componentDidMount: function () {
 			var setState = this.setState;
 			var router = Router({
-				'/': setState.bind(this, {nowShowing: app.ALL_TODOS}),
-				'/active': setState.bind(this, {nowShowing: app.ACTIVE_TODOS}),
-				'/completed': setState.bind(this, {nowShowing: app.COMPLETED_TODOS})
+				'/': setState.bind(this, {nowShowing: app.ALL_TASKS}),
+				'/unstarted': setState.bind(this, {nowShowing: app.ACTIVE_TASKS}),
+				'/active': setState.bind(this, {nowShowing: app.ACTIVE_TASKS}),
+				'/completed': setState.bind(this, {nowShowing: app.COMPLETED_TASKS})
 			});
 			router.init('/');
 		},
 
 		handleChange: function (event) {
-			this.setState({newTodo: event.target.value});
+			this.setState({newTask: event.target.value});
 		},
 
-		handleNewTodoKeyDown: function (event) {
+		handleNewTaskKeyDown: function (event) {
 			if (event.keyCode !== ENTER_KEY) {
 				return;
 			}
 
 			event.preventDefault();
 
-			var val = this.state.newTodo.trim();
+			var val = this.state.newTask.trim();
 
 			if (val) {
-				this.props.model.addTodo(val);
-				this.setState({newTodo: ''});
+				this.props.model.addTask(val);
+				this.setState({newTask: ''});
 			}
 		},
 
@@ -59,20 +60,20 @@ var app = app || {};
 			this.props.model.toggleAll(checked);
 		},
 
-		toggle: function (todoToToggle) {
-			this.props.model.toggle(todoToToggle);
+		toggle: function (taskToToggle) {
+			this.props.model.toggle(taskToToggle);
 		},
 
-		destroy: function (todo) {
-			this.props.model.destroy(todo);
+		destroy: function (task) {
+			this.props.model.destroy(task);
 		},
 
-		edit: function (todo) {
-			this.setState({editing: todo.id});
+		edit: function (task) {
+			this.setState({editing: task.id});
 		},
 
-		save: function (todoToSave, text) {
-			this.props.model.save(todoToSave, text);
+		save: function (taskToSave, text) {
+			this.props.model.save(taskToSave, text);
 			this.setState({editing: null});
 		},
 
@@ -87,61 +88,61 @@ var app = app || {};
 		render: function () {
 			var footer;
 			var main;
-			var todos = this.props.model.todos;
+			var tasks = this.props.model.tasks;
 
-			var shownTodos = todos.filter(function (todo) {
+			var shownTasks = tasks.filter(function (task) {
 				switch (this.state.nowShowing) {
-				case app.ACTIVE_TODOS:
-					return !todo.completed;
-				case app.COMPLETED_TODOS:
-					return todo.completed;
+				case app.ACTIVE_TASKS:
+					return !task.completed;
+				case app.COMPLETED_TASKS:
+					return task.completed;
 				default:
 					return true;
 				}
 			}, this);
 
-			var todoItems = shownTodos.map(function (todo) {
+			var taskItems = shownTasks.map(function (task) {
 				return (
-					<TodoItem
-						key={todo.id}
-						todo={todo}
-						onToggle={this.toggle.bind(this, todo)}
-						onDestroy={this.destroy.bind(this, todo)}
-						onEdit={this.edit.bind(this, todo)}
-						editing={this.state.editing === todo.id}
-						onSave={this.save.bind(this, todo)}
+					<TaskItem
+						key={task.id}
+						task={task}
+						onToggle={this.toggle.bind(this, task)}
+						onDestroy={this.destroy.bind(this, task)}
+						onEdit={this.edit.bind(this, task)}
+						editing={this.state.editing === task.id}
+						onSave={this.save.bind(this, task)}
 						onCancel={this.cancel}
 					/>
 				);
 			}, this);
 
-			var activeTodoCount = todos.reduce(function (accum, todo) {
-				return todo.completed ? accum : accum + 1;
+			var activeTaskCount = tasks.reduce(function (accum, task) {
+				return task.completed ? accum : accum + 1;
 			}, 0);
 
-			var completedCount = todos.length - activeTodoCount;
+			var completedCount = tasks.length - activeTaskCount;
 
-			if (activeTodoCount || completedCount) {
+			if (activeTaskCount || completedCount) {
 				footer =
-					<TodoFooter
-						count={activeTodoCount}
+					<TaskFooter
+						count={activeTaskCount}
 						completedCount={completedCount}
 						nowShowing={this.state.nowShowing}
 						onClearCompleted={this.clearCompleted}
 					/>;
 			}
 
-			if (todos.length) {
+			if (tasks.length) {
 				main = (
 					<section className="main">
 						<input
 							className="toggle-all"
 							type="checkbox"
 							onChange={this.toggleAll}
-							checked={activeTodoCount === 0}
+							checked={activeTaskCount === 0}
 						/>
-						<ul className="todo-list">
-							{todoItems}
+						<ul className="task-list">
+							{taskItems}
 						</ul>
 					</section>
 				);
@@ -150,12 +151,12 @@ var app = app || {};
 			return (
 				<div>
 					<header className="header">
-						<h1>todos</h1>
+						<h1>tasks</h1>
 						<input
-							className="new-todo"
+							className="new-task"
 							placeholder="What needs to be done?"
-							value={this.state.newTodo}
-							onKeyDown={this.handleNewTodoKeyDown}
+							value={this.state.newTask}
+							onKeyDown={this.handleNewTaskKeyDown}
 							onChange={this.handleChange}
 							autoFocus={true}
 						/>
@@ -167,12 +168,12 @@ var app = app || {};
 		}
 	});
 
-	var model = new app.TodoModel('react-todos');
+	var model = new app.TaskModel('react-tasks');
 
 	function render() {
 		React.render(
-			<TodoApp model={model}/>,
-			document.getElementsByClassName('todoapp')[0]
+			<TaskApp model={model}/>,
+			document.getElementsByClassName('taskapp')[0]
 		);
 	}
 
