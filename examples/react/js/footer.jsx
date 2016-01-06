@@ -2,7 +2,7 @@
 /*jshint white:false */
 /*jshint trailing:false */
 /*jshint newcap:false */
-/*global React */
+/*global React, _ */
 var app = app || {};
 
 (function () {

@@ -1,3 +1,5 @@
+/*global _ */
+
 var app = app || {};
 
 (function () {

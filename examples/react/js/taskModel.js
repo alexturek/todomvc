@@ -2,6 +2,7 @@
 /*jshint white:false */
 /*jshint trailing:false */
 /*jshint newcap:false */
+/*global _ */
 var app = app || {};
 
 (function () {
