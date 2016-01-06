@@ -96,6 +96,7 @@ var app = app || {};
 
 		render: function () {
 			var subtasks = _.map(this.props.task.subtasks, this.renderSubtask);
+			var completeCount = app.Utils.completedSubtasks(this.props.task).length;
 			return (
 				<li className={classNames({
 					completed: this.props.task.completed,
@@ -103,7 +104,7 @@ var app = app || {};
 				})}>
 					<div className="view">
 						<label onDoubleClick={this.handleEdit}>
-							{this.props.task.title}
+							({completeCount}/{subtasks.length}) {this.props.task.title}
 						</label>
 						<ul>
 							{subtasks}

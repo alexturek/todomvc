@@ -48,5 +48,11 @@ var app = app || {};
 			}
 			return newObj;
 		},
+
+		completedSubtasks: function(task) {
+			return _.filter(task.subtasks, function(subtask) {
+				return subtask.completed;
+			});
+		},
 	};
 })();

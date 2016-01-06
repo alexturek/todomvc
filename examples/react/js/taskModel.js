@@ -20,12 +20,6 @@ var app = app || {};
 		this.onChanges = [];
 	};
 
-	app.TaskModel.prototype.completedSubtasks = function(task) {
-		return _.filter(task.subtasks, function(subtask) {
-			return subtask.completed;
-		});
-	};
-
 	app.TaskModel.prototype.complete = function(id) {
 		var found = this.find(id);
 		if (!found || !found.subtask) {
@@ -49,7 +43,7 @@ var app = app || {};
 		if (found.task) {
 			var task = found.task;
 			return task.subtasks.length &&
-						 task.subtasks.length == this.completedSubtasks(task).length;
+						 task.subtasks.length == Utils.completedSubtasks(task).length;
 		}
 		if (found.subtask) {
 			return found.subtask.completed;
